@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kamus Bahasa Banggai</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 25px;
+    }
+
+    .controls {
+      max-width: 700px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input {
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      flex: 1;
+      min-width: 250px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #3498db;
+      color: #fff;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #results {
+      max-width: 700px;
+      margin: 0 auto;
+      display: grid;
+      gap: 15px;
+    }
+
+    .entry {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .entry:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .headword {
+      font-weight: bold;
+      font-size: 20px;
+      color: #2c3e50;
+      margin-bottom: 6px;
+    }
+
+    .jenis {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-left: 6px;
+    }
+
+    .arti {
+      font-size: 16px;
+      margin-bottom: 6px;
+      color: #27ae60;
+    }
+
+    .contoh {
+      font-style: italic;
+      color: #555;
+      font-size: 15px;
+    }
+
+    .direction-label {
+      font-weight: bold;
+      font-size: 16px;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+  <h1>📖 Kamus Bahasa Banggai</h1>
+  
+  <div class="controls">
+    <span class="direction-label" id="directionLabel">Banggai ➝ Indonesia</span>
+    <button id="switchBtn">↔</button>
+    <input type="text" id="search" placeholder="🔍 Cari kata...">
+  </div>
+
+  <div id="results"></div>
+
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    let data = [];
+    let direction = "banggai"; // default arah
+
+    // Load CSV
+    Papa.parse("kamus.csv", {
+      download: true,
+      header: true,
+      complete: function(results) {
+        data = results.data;
+        console.log("Data berhasil dimuat:", data);
+      }
+    });
+
+    // Tombol switch arah
+    document.getElementById("switchBtn").addEventListener("click", function() {
+      direction = (direction === "banggai") ? "indonesia" : "banggai";
+      document.getElementById("directionLabel").textContent =
+        (direction === "banggai") ? "Banggai ➝ Indonesia" : "Indonesia ➝ Banggai";
+      document.getElementById("search").dispatchEvent(new Event("input")); // refresh hasil
+    });
+
+    // Fungsi pencarian
+    document.getElementById("search").addEventListener("input", function() {
+      const q = this.value.toLowerCase();
+
+      let results = [];
+      if (direction === "banggai") {
+        results = data.filter(e =>
+          e["Kata Dasar"] && (
+            e["Kata Dasar"].toLowerCase().includes(q) ||
+            e["Artinya"].toLowerCase().includes(q)
+          )
+        );
+      } else {
+        results = data.filter(e =>
+          e["Artinya"] && (
+            e["Artinya"].toLowerCase().includes(q) ||
+            e["Kata Dasar"].toLowerCase().includes(q)
+          )
+        );
+      }
+
+      document.getElementById("results").innerHTML = results.map(e => `
+        <div class="entry">
+          <div class="headword">
+            ${direction === "banggai" ? e["Kata Dasar"] : e["Artinya"]}
+            <span class="jenis">(${e["Jenis Kata"]})</span>
+          </div>
+          <div class="arti">💡 ${direction === "banggai" ? e["Artinya"] : e["Kata Dasar"]}</div>
+          <div class="contoh">"${e["Contoh"]}"</div>
+        </div>
+      `).join("");
+    });
+  </script>
+</body>
+</html>
