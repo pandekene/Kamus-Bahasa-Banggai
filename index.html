@@ -2,99 +2,154 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kamus Bahasa Banggai</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f5f7fa;
+      padding: 0;
+      background: #f4f6f9;
       color: #333;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      color: #2c3e50;
-      margin-bottom: 25px;
-    }
-
-    .controls {
-      max-width: 700px;
-      margin: 0 auto 20px auto;
       display: flex;
-      gap: 10px;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: #3498db;
+      color: white;
+      text-align: center;
+      padding: 20px 10px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+    }
+
+    header img {
+      height: 70px;
+      margin-bottom: 6px;
+      border-radius: 50%;
+      background: white;
+      padding: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 22px;
+      margin: 6px 0 12px;
+    }
+
+    /* NAV TAB */
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #2980b9;
+      border-radius: 10px;
+      margin: 0 auto;
+      max-width: 320px;
+      overflow: hidden;
+    }
+
+    nav a {
+      flex: 1;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    nav a.active {
+      background: #1c6697;
+    }
+
+    nav a:hover {
+      background: #2471a3;
+    }
+
+    /* SEARCH CONTROLS */
+    .controls {
+      max-width: 600px;
+      margin: 20px auto;
+      display: flex;
+      gap: 8px;
       justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
+      padding: 0 15px;
     }
 
-    input {
+    .controls input {
+      flex: 1;
       padding: 12px 14px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-      flex: 1;
-      min-width: 250px;
-      transition: all 0.2s ease;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
-    input:focus {
-      border-color: #3498db;
-      outline: none;
-      box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
-    }
-
-    button {
-      padding: 12px 18px;
-      font-size: 16px;
+    .controls button {
+      padding: 10px 14px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       background: #3498db;
-      color: #fff;
-      transition: background 0.2s ease;
+      color: white;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
 
-    button:hover {
+    .controls button:hover {
       background: #2980b9;
     }
 
+    .direction-label {
+      font-weight: bold;
+      font-size: 14px;
+      margin-right: 6px;
+      color: #2c3e50;
+    }
+
+    /* HASIL */
     #results {
-      max-width: 700px;
-      margin: 0 auto;
+      max-width: 600px;
+      margin: 0 auto 40px;
       display: grid;
-      gap: 15px;
+      gap: 14px;
+      padding: 0 15px;
     }
 
     .entry {
       background: #fff;
-      border-radius: 10px;
-      padding: 16px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      border-left: 4px solid #3498db;
+      transition: transform 0.2s ease;
     }
 
     .entry:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
     }
 
     .headword {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
       color: #2c3e50;
       margin-bottom: 6px;
     }
 
     .jenis {
-      font-size: 14px;
+      font-size: 13px;
       color: #7f8c8d;
-      margin-left: 6px;
+      margin-bottom: 6px;
     }
 
     .arti {
-      font-size: 16px;
+      font-size: 15px;
       margin-bottom: 6px;
       color: #27ae60;
     }
@@ -102,53 +157,120 @@
     .contoh {
       font-style: italic;
       color: #555;
-      font-size: 15px;
+      font-size: 14px;
+      margin-bottom: 4px;
     }
 
-    .direction-label {
-      font-weight: bold;
-      font-size: 16px;
-      color: #2c3e50;
+    .no-results {
+      text-align: center;
+      color: #888;
+      font-size: 15px;
+      padding: 20px;
+    }
+
+    /* TENTANG */
+    #aboutPage {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      display: none;
+    }
+
+    #aboutPage h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+
+    #aboutPage ul {
+      padding-left: 18px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 14px;
+      background: #f9f9f9;
+      border-top: 1px solid #ddd;
+      margin-top: auto;
+      color: #555;
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 18px;
+      }
+      .controls {
+        flex-direction: column;
+      }
+      .controls input, 
+      .controls button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>📖 Kamus Bahasa Banggai</h1>
+  <header>
+    <img src="pandekene.png" alt="Logo Pandekene">
+    <h1>Kamus Bahasa Banggai</h1>
+    <nav>
+      <a href="#" id="tabKamus" onclick="showPage('kamus')">Kamus</a>
+      <a href="#" id="tabAbout" onclick="showPage('about')">Tentang</a>
+    </nav>
+  </header>
   
-  <div class="controls">
-    <span class="direction-label" id="directionLabel">Banggai ➝ Indonesia</span>
-    <button id="switchBtn">↔</button>
-    <input type="text" id="search" placeholder="🔍 Cari kata...">
+  <!-- Halaman Kamus -->
+  <div id="kamusPage">
+    <div class="controls">
+      <span class="direction-label" id="directionLabel">Banggai ➝ Indonesia</span>
+      <button id="switchBtn">🔄</button>
+      <input type="text" id="search" placeholder="🔍 Cari kata...">
+    </div>
+    <div id="results"></div>
   </div>
 
-  <div id="results"></div>
+  <!-- Halaman Tentang -->
+  <div id="aboutPage">
+    <h2>Tentang Aplikasi</h2>
+    <p><strong>Kamus Bahasa Banggai</strong> adalah aplikasi digital sederhana yang dibuat untuk membantu masyarakat memahami kosakata Bahasa Banggai dan terjemahannya ke Bahasa Indonesia.</p>
+    <p>Aplikasi ini bertujuan melestarikan bahasa daerah sekaligus mempermudah generasi muda belajar bahasa ibu mereka.</p>
+    <h3>Tim Penyusun</h3>
+    <ul>
+      <li><strong>Fajri Andika Putra</strong> – Pimpinan Project</li>
+      <li><strong>Mawar T. Harun</strong> – Penyusun Kata & Penerjemah</li>
+      <li><strong>Tim Pandekene</strong> – Desain & Dokumentasi</li>
+    </ul>
+  </div>
+
+  <footer>
+    © 2025 Aplikasi ini dikembangkan oleh <strong>Pandekene</strong> . Hak cipta dilindungi undang-undang.
+  </footer>
 
   <!-- PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     let data = [];
-    let direction = "banggai"; // default arah
+    let direction = "banggai"; 
 
-    // Load CSV
     Papa.parse("kamus.csv", {
       download: true,
       header: true,
       complete: function(results) {
-        data = results.data;
-        console.log("Data berhasil dimuat:", data);
+        data = results.data.filter(e => e["Kata Dasar"] && e["Artinya"]);
       }
     });
 
-    // Tombol switch arah
     document.getElementById("switchBtn").addEventListener("click", function() {
       direction = (direction === "banggai") ? "indonesia" : "banggai";
       document.getElementById("directionLabel").textContent =
         (direction === "banggai") ? "Banggai ➝ Indonesia" : "Indonesia ➝ Banggai";
-      document.getElementById("search").dispatchEvent(new Event("input")); // refresh hasil
+      document.getElementById("search").dispatchEvent(new Event("input"));
     });
 
-    // Fungsi pencarian
     document.getElementById("search").addEventListener("input", function() {
       const q = this.value.toLowerCase();
 
@@ -169,17 +291,32 @@
         );
       }
 
+      if (results.length === 0) {
+        document.getElementById("results").innerHTML = `<p class="no-results">🙁 Tidak ditemukan hasil</p>`;
+        return;
+      }
+
       document.getElementById("results").innerHTML = results.map(e => `
         <div class="entry">
-          <div class="headword">
-            ${direction === "banggai" ? e["Kata Dasar"] : e["Artinya"]}
-            <span class="jenis">(${e["Jenis Kata"]})</span>
-          </div>
-          <div class="arti">💡 ${direction === "banggai" ? e["Artinya"] : e["Kata Dasar"]}</div>
-          <div class="contoh">"${e["Contoh"]}"</div>
+          <div class="headword">${direction === "banggai" ? e["Kata Dasar"] : e["Artinya"]}</div>
+          ${e["Jenis Kata"] ? `<div class="jenis">Jenis kata: ${e["Jenis Kata"]}</div>` : ""}
+          <div class="arti">${direction === "banggai" ? e["Artinya"] : e["Kata Dasar"]}</div>
+          ${e["Contoh Kalimat"] ? `<div class="contoh">"${e["Contoh Kalimat"]}"</div>` : ""}
+          ${e["Arti kalimat"] ? `<div class="contoh">${e["Arti kalimat"]}</div>` : ""}
         </div>
       `).join("");
     });
+
+    function showPage(page) {
+      document.getElementById("kamusPage").style.display = (page === 'kamus') ? 'block' : 'none';
+      document.getElementById("aboutPage").style.display = (page === 'about') ? 'block' : 'none';
+
+      document.getElementById("tabKamus").classList.toggle("active", page === 'kamus');
+      document.getElementById("tabAbout").classList.toggle("active", page === 'about');
+    }
+
+    // Default ke halaman Kamus
+    showPage('kamus');
   </script>
 </body>
 </html>
